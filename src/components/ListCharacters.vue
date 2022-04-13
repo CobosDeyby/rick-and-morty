@@ -19,11 +19,15 @@ export default {
     },
     setup(){
         const store = useStore()
+        const page = computed(()=>{
+            return store.state.page
+        })
         const characters = computed(()=>{
             return store.state.charactersFilter
         })
+
         onMounted(()=>{
-            store.dispatch('getCharacters')
+            store.dispatch('getCharacters', page.value)
         })
         
         return {

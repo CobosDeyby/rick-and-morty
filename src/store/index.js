@@ -3,7 +3,9 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     characters: [],
-    charactersFilter: []
+    charactersFilter: [],
+    page: 1,
+    pages: 1
   },
   getters: {
   },
@@ -13,15 +15,23 @@ export default createStore({
     },
     setCharactersFilter(state, payload){
       state.charactersFilter = payload
+    },
+    setPages(state, payload){
+      state.pages = payload
+    },
+    setPage(state, payload){
+      state.page = payload
     }
   },
   actions: {
-    async getCharacters({commit}){
+    async getCharacters({commit}, page){
       try{
-        const response = await fetch('https://rickandmortyapi.com/api/character')
+
+        const response = await fetch('https://rickandmortyapi.com/api/character/'+ '?page='+page)
         const data = await response.json()
         commit('setCharacters', data.results)
         commit('setCharactersFilter', data.results)
+        commit('setPages', data.info)
 
       } catch(e){
         console.log(e)
@@ -44,6 +54,13 @@ export default createStore({
         
       })
     commit('setCharactersFilter', results)
+    },
+    SetPagination({commit}){
+      commit('setPages', this.setPages)
+    },
+    SetPage({state, dispatch }, page){
+      state.page = page
+      dispatch('getCharacters',page)
     }
   },
   modules: {
